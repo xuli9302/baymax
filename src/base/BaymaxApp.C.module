@@ -1,0 +1,46 @@
+#include "BaymaxApp.h"
+#include "Moose.h"
+#include "AppFactory.h"
+
+template<>
+InputParameters validParams<BaymaxApp>()
+{
+  InputParameters params = validParams<MooseApp>();
+
+  params.set<bool>("use_legacy_uo_initialization") = false;
+  params.set<bool>("use_legacy_uo_aux_computation") = false;
+  return params;
+}
+
+BaymaxApp::BaymaxApp(const std::string & name, InputParameters parameters) :
+    MooseApp(name, parameters)
+{
+  srand(processor_id());
+
+  Moose::registerObjects(_factory);
+  BaymaxApp::registerObjects(_factory);
+
+  Moose::associateSyntax(_syntax, _action_factory);
+  BaymaxApp::associateSyntax(_syntax, _action_factory);
+}
+
+BaymaxApp::~BaymaxApp()
+{
+}
+
+extern "C" void BaymaxApp__registerApps() { BaymaxApp::registerApps(); }
+void
+BaymaxApp::registerApps()
+{
+  registerApp(BaymaxApp);
+}
+
+void
+BaymaxApp::registerObjects(Factory & factory)
+{
+}
+
+void
+BaymaxApp::associateSyntax(Syntax & syntax, ActionFactory & action_factory)
+{
+}
